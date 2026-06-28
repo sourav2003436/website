@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saathi - Vendor Registration</title>
+<style>
+/* MENU STYLES */
+.menu-container { position: absolute; top: 20px; left: 20px; z-index: 1000; }
+.menu-btn { cursor: pointer; font-size: 28px; color: #9b59b6; user-select: none; }
+.menu-content { display: none; background: #1a0b2e; border: 1px solid #4a2377; padding: 15px; border-radius: 8px; margin-top: 10px; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.menu-content.show { display: block; }
+.menu-content a, .menu-item { display: block; padding: 8px 0; color: white; text-decoration: none; cursor: pointer; }
+.menu-content a:hover { color: #9b59b6; }
+.detail { display: none; font-size: 13px; color: #aaa; padding-left: 10px; margin-bottom: 10px; line-height: 1.4; }
+
+/* GLOBAL STYLES */
+body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0a0510; color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+header { width: 100%; padding: 20px 0; text-align: center; border-bottom: 1px solid rgba(138, 43, 226, 0.2); background-color: rgba(10, 5, 16, 0.9); }
+header h1 { margin: 0; font-size: 24px; letter-spacing: 2px; }
+header span { color: #9b59b6; }
+.form-container { background-color: #1a0b2e; width: 90%; max-width: 600px; margin: 40px auto; padding: 40px; border-radius: 12px; box-shadow: 0 0 25px rgba(138, 43, 226, 0.2); border: 1px solid #4a2377; }
+h2 { color: #9b59b6; margin-top: 0; margin-bottom: 25px; border-bottom: 1px solid #4a2377; padding-bottom: 10px; }
+.form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+label { margin-bottom: 8px; font-size: 14px; color: #a093b5; }
+input, select, textarea { padding: 12px; background-color: #0a0510; border: 1px solid #4a2377; color: white; border-radius: 6px; font-size: 16px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #9b59b6; box-shadow: 0 0 8px rgba(155, 89, 182, 0.5); }
+.button-group { display: flex; justify-content: flex-end; margin-top: 30px; }
+.button-group.between { justify-content: space-between; }
+button { background-color: #9b59b6; color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
+button:hover { background-color: #8e44ad; }
+.btn-secondary { background-color: transparent; border: 1px solid #9b59b6; color: #9b59b6; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.btn-secondary:hover { background-color: rgba(155, 89, 182, 0.1); }
+#step-2 { display: none; }
+</style>
+</head>
+<body>
+
+<div class="menu-container">
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="menu-content" id="menuContent">
+    <a href="index.html">Home</a>
+    <div class="menu-item" onclick="toggleDetail('about')">About ▾</div>
+    <div id="about" class="detail">Saathi is a professional service platform.</div>
+    <div class="menu-item" onclick="toggleDetail('help')">Help ▾</div>
+    <div id="help" class="detail">Email: rajsourav853@gmail.com<br>Phone: 7004174644</div>
+  </div>
+</div>
+
+<header>
+  <h1>SAA<span>THI</span></h1>
+</header>
+
+<div class="form-container">
+  <form action="/api/register-vendor" method="POST" id="vendorForm">
+    <div id="step-1">
+      <h2>Step 1: Personal Details</h2>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="contactNo">Contact Number</label>
+        <input type="tel" id="contactNo" name="contactNo" placeholder="10-digit mobile number" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="example@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="" disabled selected>Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="address">Full Address</label>
+        <textarea id="address" name="address" rows="3" placeholder="Enter your residential address" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="idType">ID Proof Type</label>
+        <select id="idType" name="idType" required>
+          <option value="" disabled selected>-- Select your ID Proof --</option>
+          <option value="aadhaar">Aadhaar Card</option>
+          <option value="pan">PAN Card</option>
+          <option value="voter">Voter ID</option>
+          <option value="dl">Driving License</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="idProof">ID Proof Number</label>
+        <input type="text" id="idProof" name="idProof" placeholder="[ID Number Redacted]" required>
+      </div>
+      <div class="button-group between">
+        <a href="index.html" class="btn-secondary">&larr; Home</a>
+        <button type="button" onclick="showStep2()">Next Step &rarr;</button>
+      </div>
+    </div>
+
+    <div id="step-2">
+      <h2>Step 2: Professional Details</h2>
+      <div class="form-group">
+        <label for="profession">Your Profession</label>
+        <select id="profession" name="profession" required>
+          <option value="" disabled selected>Select your service...</option>
+          <option value="driver">Driver</option>
+          <option value="cook">Cook</option>
+          <option value="gardener">Gardener</option>
+          <option value="electrician">Electrician</option>
+          <option value="plumber">Plumber</option>
+          <option value="carpenter">Carpenter</option>
+          <option value="cleaner">House Cleaner</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="experience">Years of Experience</label>
+        <select id="experience" name="experience" required>
+          <option value="" disabled selected>Select experience...</option>
+          <option value="1">1 Year</option>
+          <option value="2">2 Years</option>
+          <option value="3">3 Years</option>
+          <option value="4">4 Years</option>
+          <option value="5">5 Years</option>
+          <option value="6">6 Years</option>
+          <option value="7">7 Years</option>
+          <option value="8">8 Years</option>
+          <option value="9">9 Years</option>
+          <option value="10">10 Years</option>
+          <option value="more_than_10">More than 10 Years</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="pincode">Pincode / Working Area</label>
+        <input type="text" id="pincode" name="pincode" placeholder="Enter Pincode or Locality Name" required>
+      </div>
+      <div class="button-group between">
+        <button type="button" class="btn-secondary" onclick="showStep1()">&larr; Back</button>
+        <button type="submit">Complete Registration</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  function toggleMenu() { document.getElementById('menuContent').classList.toggle('show'); }
+  function toggleDetail(id) { 
+    const el = document.getElementById(id); 
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block'; 
+  }
+  function showStep2() {
+    document.getElementById('step-1').style.display = 'none';
+    document.getElementById('step-2').style.display = 'block';
+  }
+  function showStep1() {
+    document.getElementById('step-2').style.display = 'none';
+    document.getElementById('step-1').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
