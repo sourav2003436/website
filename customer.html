@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saathi - Professional Search</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #0a0510; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    
+    /* INTERACTIVE MENU STYLES */
+    .menu-container { position: absolute; top: 20px; left: 20px; z-index: 1000; }
+    .menu-btn { cursor: pointer; font-size: 28px; color: #9b59b6; user-select: none; }
+    .menu-content { display: none; background: #1a0b2e; border: 1px solid #4a2377; padding: 15px; border-radius: 8px; margin-top: 10px; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .menu-content.show { display: block; }
+    .menu-content a, .menu-item { display: block; padding: 8px 0; color: white; text-decoration: none; cursor: pointer; }
+    .menu-content a:hover { color: #9b59b6; }
+    .detail { display: none; font-size: 13px; color: #aaa; padding-left: 10px; margin-bottom: 10px; line-height: 1.4; }
+
+    /* SEARCH CONTAINER */
+    .container { background: #1a0b2e; border: 1px solid #4a2377; border-radius: 15px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 0 20px rgba(138, 43, 226, 0.2); margin-top: 50px; }
+    h1 { color: #9b59b6; text-align: center; margin-bottom: 20px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; color: #a093b5; font-size: 14px; }
+    select, input { width: 100%; padding: 12px; background: #0a0510; border: 1px solid #4a2377; border-radius: 6px; color: white; cursor: pointer; }
+    .submit-btn { width: 100%; padding: 15px; background: #9b59b6; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+    .submit-btn:hover { background: #8e44ad; }
+    .back-link { display: inline-block; margin-bottom: 15px; color: #9b59b6; text-decoration: none; font-size: 14px; font-weight: bold; }
+    .back-link:hover { text-decoration: underline; }
+    
+    /* RESULT CARD STYLES */
+    #resultsContainer { width: 100%; max-width: 500px; margin-top: 20px; }
+    .result-card { background: #1a0b2e; border: 1px solid #4a2377; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+    .result-card h3 { color: #ffffff; margin-bottom: 5px; }
+    .result-card p { color: #a093b5; font-size: 14px; }
+    .result-card .contact { color: #9b59b6; font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="menu-container">
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="menu-content" id="menuContent">
+    <a href="index.html">Home</a>
+    <div class="menu-item" onclick="toggleDetail('about')">About ▾</div>
+    <div id="about" class="detail">Saathi is a professional platform designed to help you find and hire trusted local experts for your daily needs.</div>
+    <div class="menu-item" onclick="toggleDetail('help')">Help ▾</div>
+    <div id="help" class="detail">Email: rajsourav853@gmail.com<br>Phone: 7004174644</div>
+  </div>
+</div>
+
+<div class="container">
+  <a href="javascript:history.back()" class="back-link">&larr; Go Back</a>
+  <h1>SAATHI</h1>
+
+  <div class="form-group">
+    <label>State</label>
+    <select id="stateSelect" onchange="updateDistricts()">
+      <option value="">-- Select State --</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>District</label>
+    <select id="districtSelect">
+      <option value="">-- Select State First --</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Pincode</label>
+    <input type="text" id="pincodeInput" placeholder="Enter Pincode">
+  </div>
+
+  <div class="form-group">
+    <label>Required Profession</label>
+    <select id="professionSelect">
+      <option value="Electrician">Electrician</option>
+      <option value="Plumber">Plumber</option>
+      <option value="Carpenter">Carpenter</option>
+      <option value="Driver">Driver</option>
+      <option value="Cook">Cook</option>
+       <option value="gardner">Gardner</option>
+      <option value="Cleaner">Cleaner</option>
+    </select>
+  </div>
+
+  <button class="submit-btn" onclick="searchVendors()">Search Professionals</button>
+</div>
+
+<div id="resultsContainer"></div>
+
+<script>
+  function toggleMenu() { document.getElementById('menuContent').classList.toggle('show'); }
+  function toggleDetail(id) { 
+    const el = document.getElementById(id); 
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block'; 
+  }
+
+  async function searchVendors() {
+    const pincode = document.getElementById("pincodeInput").value;
+    const profession = document.getElementById("professionSelect").value;
+    const container = document.getElementById("resultsContainer");
+
+    if(!pincode) { alert("Please enter a valid pincode."); return; }
+
+    try {
+      const response = await fetch('/api/search-vendors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pincode: pincode, profession: profession })
+      });
+
+      const data = await response.json();
+      container.innerHTML = ""; // Clear old results
+
+      if (data.vendors.length === 0) {
+        container.innerHTML = "<p style='text-align:center; color:#a093b5;'>No professionals found.</p>";
+      } else {
+        container.innerHTML = "<h2 style='color:#9b59b6; margin-bottom:15px; text-align:center;'>Available Professionals:</h2>";
+        data.vendors.forEach(v => {
+          container.innerHTML += `
+            <div class="result-card">
+              <h3>${v.name}</h3>
+              <p>Profession: ${v.profession}</p>
+              <p>Experience: ${v.experience}</p>
+              <p class="contact">Contact: ${v.contact}</p>
+            </div>
+          `;
+        });
+      }
+    } catch (error) {
+      alert("Failed to connect to the server.");
+    }
+  }
+
+  // Location Logic remains same...
+  const locationData = { "Andhra Pradesh": ["Anantapur", "Chittoor", "East Godavari", "Guntur", "Krishna", "Kurnool", "Nellore", "Prakasam", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"], "Arunachal Pradesh": ["Tawang", "West Kameng", "East Kameng", "Papum Pare", "Lohit", "Changlang"], "Assam": ["Guwahati", "Dibrugarh", "Jorhat", "Silchar", "Nagaon", "Tinsukia"], "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Begusarai", "Sitamarhi"], "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Raigarh"], "Goa": ["North Goa", "South Goa"], "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar"], "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Karnal", "Hisar"], "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala", "Solan", "Mandi"], "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Hazaribagh"], "Karnataka": ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru", "Belagavi", "Tumakuru"], "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur"], "Madhya Pradesh": ["Bhopal", "Indore", "Gwalior", "Jabalpur", "Ujiain", "Sagar"], "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Thane", "Aurangabad", "Solapur", "Kolhapur"], "Manipur": ["Imphal East", "Imphal West", "Thoubal", "Churachandpur"], "Meghalaya": ["Shillong", "Tura", "Jowai"], "Mizoram": ["Aizawl", "Lunglei", "Champhai"], "Nagaland": ["Kohima", "Dimapur", "Mokokchung"], "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Puri"], "Punjab": ["Amritsar", "Ludhiana", "Jalandhar", "Patiala", "Bathinda"], "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner"], "Sikkim": ["Gangtok", "Namchi", "Mangan"], "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli"], "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Khammam", "Karimnagar"], "Tripura": ["Agartala", "Udaipur", "Dharmanagar"], "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi", "Agra", "Prayagraj", "Meerut", "Ghaziabad"], "Uttarakhand": ["Dehradun", "Haridwar", "Haldwani", "Roorkee", "Rishikesh"], "West Bengal": ["Kolkata", "Siliguri", "Durgapur", "Howrah", "Asansol", "Darjeeling"] };
+  const stateSelect = document.getElementById("stateSelect");
+  Object.keys(locationData).sort().forEach(state => { let opt = document.createElement("option"); opt.value = state; opt.textContent = state; stateSelect.appendChild(opt); });
+  function updateDistricts() { const state = stateSelect.value; const districtSelect = document.getElementById("districtSelect"); districtSelect.innerHTML = '<option value="">-- Select District --</option>'; if (locationData[state]) { locationData[state].sort().forEach(d => { let opt = document.createElement("option"); opt.value = d; opt.textContent = d; districtSelect.appendChild(opt); }); } }
+</script>
+
+</body>
+</html>
