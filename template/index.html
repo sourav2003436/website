@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saathi - Home</title>
+  <style>
+    /* Reset and Base Styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      background: #05010a;
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(85, 26, 139, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 85% 50%, rgba(138, 43, 226, 0.2) 0%, transparent 50%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* INTERACTIVE MENU STYLES */
+    .menu-container { position: absolute; top: 20px; left: 20px; z-index: 1000; }
+    .menu-btn { cursor: pointer; font-size: 28px; color: #9d4edd; user-select: none; }
+    .menu-content { display: none; background: #1a0b2e; border: 1px solid #4a2377; padding: 15px; border-radius: 8px; margin-top: 10px; min-width: 280px; }
+    .menu-content.show { display: block; }
+    .menu-content a, .menu-item { display: block; padding: 8px 0; color: white; text-decoration: none; cursor: pointer; }
+    .menu-content a:hover { color: #9d4edd; }
+    .detail { display: none; font-size: 13px; color: #aaa; padding-left: 10px; margin-bottom: 10px; line-height: 1.4; }
+
+    /* Header Styling */
+    header { padding: 30px 50px; }
+    .logo { font-size: 28px; font-weight: 700; letter-spacing: 1px; }
+    .logo span { color: #9d4edd; }
+
+    /* Main Content Area */
+    main { flex: 1; display: flex; justify-content: center; align-items: center; gap: 60px; padding: 40px 20px; flex-wrap: wrap; }
+    .option-link { text-decoration: none; color: inherit; display: inline-block; }
+
+    /* Circular Card Styling */
+    .circle-card {
+      width: 400px; height: 400px; border-radius: 50%;
+      background: rgba(20, 10, 30, 0.4); backdrop-filter: blur(5px);
+      border: 2px solid rgba(157, 78, 221, 0.3);
+      box-shadow: 0 0 60px rgba(138, 43, 226, 0.15), inset 0 0 30px rgba(157, 78, 221, 0.1);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 40px; transition: all 0.4s ease; cursor: pointer; position: relative;
+    }
+
+    .option-link:hover .circle-card { transform: scale(1.05); border-color: rgba(157, 78, 221, 0.8); }
+    .icon-container { width: 120px; height: 120px; border-radius: 50%; border: 2px solid #9d4edd; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; font-size: 50px; color: #9d4edd; background: rgba(157, 78, 221, 0.05); }
+    .circle-card h2 { font-size: 26px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 15px; }
+    .circle-card p { font-size: 14px; color: #bbbbbb; line-height: 1.6; max-width: 250px; }
+
+    footer { text-align: center; padding: 30px; font-size: 14px; }
+    footer a { color: #888; text-decoration: none; margin: 0 15px; transition: color 0.3s; }
+    footer a:hover { color: #9d4edd; }
+  </style>
+</head>
+<body>
+
+  <div class="menu-container">
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <div class="menu-content" id="menuContent">
+      <a href="index.html">Home</a>
+      <div class="menu-item" onclick="toggleDetail('about')">About ▾</div>
+      <div id="about" class="detail">Saathi is a professional platform designed to help you find and hire trusted local experts for your daily needs.</div>
+      <div class="menu-item" onclick="toggleDetail('help')">Help ▾</div>
+      <div id="help" class="detail">Email: rajsourav853@gmail.com<br>Phone: 7004174644</div>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo">SA<span>ATHI</span></div>
+  </header>
+
+  <main>
+    <a href="customer.html" class="option-link">
+      <div class="circle-card">
+        <div class="icon-container">👤</div>
+        <h2>I AM A CUSTOMER</h2>
+        <p>Find and Hire Trusted Local Professionals | Search | Book | Rate</p>
+      </div>
+    </a>
+
+    <a href="vendorregistration.html" class="option-link">
+      <div class="circle-card">
+        <div class="icon-container">💼</div>
+        <h2>I AM A VENDOR</h2>
+        <p>Register Your Profession | Grow Your Business | Reach New Clients</p>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Terms</a>
+  </footer>
+
+  <script>
+    function toggleMenu() { 
+      document.getElementById('menuContent').classList.toggle('show'); 
+    }
+    function toggleDetail(id) { 
+      const el = document.getElementById(id); 
+      el.style.display = (el.style.display === 'block') ? 'none' : 'block'; 
+    }
+  </script>
+
+</body>
+</html>
